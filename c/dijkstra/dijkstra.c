@@ -5,16 +5,21 @@
 #include "dijkstra.h"
 
 void dijkstra(Graph* graph, int source) {
+    graph->source = source;
+
+    // Define distance of all vertices to maximum integer value.
     bool visited[graph->order];
-    graph->distance = (int*)malloc(sizeof(int) * graph->order);
-    graph->previous = (int*)malloc(sizeof(int) * graph->order);
     for (int i = 0; i < graph->order; i++) {
         graph->distance[i] = INT_MAX;
         visited[i] = false;
     }
-    graph->source = source;
+
+    // Define distance of source vertex to zero.
     graph->distance[source] = 0;
 
+    // Repeat by the number of vertices in the graph minus one.
+    // We can skip the last vertex, since it would have zero unvisited neighbors.
+    // Hence, i = 1
     for (int i = 1; i < graph->order; i++) {
         int current = INT_MAX;
         int u;
@@ -38,16 +43,18 @@ void dijkstra(Graph* graph, int source) {
 }
 
 Graph* _initialize(int order) {
-    Graph* g = (Graph*)malloc(sizeof(Graph));
-    g->order = order;
-    g->matrix = (int**)malloc(sizeof(int*) * order);
+    Graph* graph = (Graph*)malloc(sizeof(Graph));
+    graph->order = order;
+    graph->distance = (int*)malloc(sizeof(int) * order);
+    graph->previous = (int*)malloc(sizeof(int) * order);
+    graph->matrix = (int**)malloc(sizeof(int*) * order);
     for (int i = 0; i < order; i++) {
-        g->matrix[i] = (int*)malloc(sizeof(int) * order);
+        graph->matrix[i] = (int*)malloc(sizeof(int) * order);
         for (int j = 0; j < order; j++) {
-            g->matrix[i][j] = INT_MAX;
+            graph->matrix[i][j] = INT_MAX;
         }
     }
-    return g;
+    return graph;
 }
 
 void _add_arc(Graph* graph, int tail, int head, int weight) {
